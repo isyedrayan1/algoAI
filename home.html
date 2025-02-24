@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="query-box">
+            <h2 id="typing-text"></h2>
+            <input type="text" id="queryInput" placeholder="Enter an algorithm..." autocomplete="off">
+            <button id="startBtn">Start</button>
+        </div>
+
+        <div class="algorithm-section hidden">
+            <div class="progress-bar"><div class="progress"></div></div>
+
+            <div class="algorithm-box">
+                <div class="steps">
+                    <h3>Algorithm Steps</h3>
+                    <p id="algorithmText">Step-by-step explanation will appear here...</p>
+                </div>
+                <div class="syntax">
+                    <h3>Syntax & Description</h3>
+                    <p id="syntaxText">Syntax and details will be shown here...</p>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="prevBtn" disabled>Previous</button>
+                <button id="nextBtn">Next</button>
+            </div>
+        </div>
+
+        <div class="code-section hidden">
+            <h3>Python Code</h3>
+            <pre><code id="codeBox"></code></pre>
+            <button id="tryCodeBtn">Try Code</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
