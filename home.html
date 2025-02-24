@@ -3,44 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algo AI</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Algo.AI | AI Power</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease-in-out;
+        }
+        body {
+            background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+            color: #ddd;
+            overflow-x: hidden;
+        }
+       /* Header Styling */
+header {
+    position: fixed;
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Shrink effect when scrolling */
+.shrink {
+    padding: 10px 30px;
+    backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f0efef9f;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Logo Hover Animation */
+.logo:hover {
+    transform: scale(1.1);
+    text-shadow: 0 0 15px #ff9800, 0 0 30px rgba(255, 152, 0, 0.6);
+}
+
+/* Robot Icon Animation */
+.logo i {
+    font-size: 36px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.logo:hover i {
+    transform: rotate(20deg) scale(1.3);
+    color: #c59c5e;
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-menu a {
+    color: #ddd;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-menu a:hover {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+    transform: scale(1.1);
+}
+
+/* Animated Underline Effect */
+.nav-menu a::after {
+    content: "";
+    display: block;
+    width: 0%;
+    height: 3px;
+    background: #ff9800;
+    transition: width 0.3s ease-in-out;
+}
+
+.nav-menu a:hover::after {
+    width: 100%;
+}
+
+/* Floating Glow Effect */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 152, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(255, 152, 0, 0.2);
+    }
+}
+
+header:hover {
+    animation: glow 1.5s infinite alternate;
+}
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            justify-content: center;
+            position: relative;
+        }
+        .hero-text h1 {
+            font-size: 60px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        /* Hero Section Styling */
+
+/* Typing Animation */
+#typing-text {
+    font-size: 22px;
+    font-weight: 400;
+    width: fit-content;  /* Allows full text to appear */
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid #ff9800;
+    font-family: "Courier New", monospace;
+    display: inline-block;
+}
+/* Cursor Blinking */
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+}
+
+        .cta-btn {
+            background: transparent;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            border: 2px solid #fff;
+            font-size: 18px;
+            margin-top: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: box-shadow 0.4s;
+        }
+        .cta-btn:hover {
+            background: #565656;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+        .bottom-container {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 24px;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 100px;
+        }
+        .nav-btn {
+        background: transparent;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        border: 2px solid #ff9800;
+        font-size: 16px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+    }
+
+    .nav-btn:hover {
+        background: #ff9800;
+        color: black;
+        box-shadow: 0 0 20px rgba(255, 152, 0, 0.8);
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+
+
+    pre {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        font-size: 16px;
+        font-family: 'Fira Code', monospace;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+ /* Ensures the code box is placed outside the container */
+.code-box {
+    display: none;
+    background: linear-gradient(135deg, #3a3a3a, #1e1e1e);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    margin: 40px auto; /* Creates separation from the container */
+    text-align: center;
+    font-family: 'Fira Code', monospace;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+    position: static; /* Ensures it's outside the container */
+}
+
+
+
+    button {
+        background: #ff9800;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background: #ffb74d;
+        transform: scale(1.05);
+    }
+    /* Progress Bar Styling */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    margin: 20px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff9800, #f3f2f2);
+    transition: width 0.5s ease-in-out;
+}
+
+    /* Footer Styling */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+    color: #bbb;
+    font-size: 14px;
+    text-transform: uppercase;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    margin-top: 50px;
+}
+
+footer:hover {
+    color: #fff;
+}
+
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="query-box">
-            <h2 id="typing-text"></h2>
-            <input type="text" id="queryInput" placeholder="Enter an algorithm..." autocomplete="off">
-            <button id="startBtn">Start</button>
-        </div>
-
-        <div class="algorithm-section hidden">
-            <div class="progress-bar"><div class="progress"></div></div>
-
-            <div class="algorithm-box">
-                <div class="steps">
-                    <h3>Algorithm Steps</h3>
-                    <p id="algorithmText">Step-by-step explanation will appear here...</p>
-                </div>
-                <div class="syntax">
-                    <h3>Syntax & Description</h3>
-                    <p id="syntaxText">Syntax and details will be shown here...</p>
-                </div>
+    <header id="header">
+            <div class="logo">
+                <i class="fas fa-robot" id="robot-icon"></i> Algo.AI
             </div>
-
-            <div class="buttons">
-                <button id="prevBtn" disabled>Previous</button>
-                <button id="nextBtn">Next</button>
+            </header>
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Discover the <br> Power of<span style="color:#888;"> ALGO-AI</span></h1>
+                <p id="typing-text">Experience the future of AI through our powerful Algorithm Visualizer.</p>
             </div>
-        </div>
-
-        <div class="code-section hidden">
-            <h3>Python Code</h3>
-            <pre><code id="codeBox"></code></pre>
-            <button id="tryCodeBtn">Try Code</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+            <button class="cta-btn" onclick="scrollToBottom()">Try Our AI</button>
+        </section>
+        <section class="bottom-container" id="bottomContainer">
+            <section id="query-section" style="display: flex; flex-direction: column; align-items: center; padding: 60px 20px; background: linear-gradient(135deg, #1a1a1a, #292929); border-radius: 15px; margin: 50px auto; width: 90%;">
+                <input type="text" id="queryBox" placeholder="Enter program name..." 
+                       style="width: 60%; padding: 15px; font-size: 18px; border-radius: 50px; border: none; text-align: center; background: #333; color: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); outline: none;">
+                
+                <div id="results" style="display: flex; justify-content: space-between; margin-top: 40px; width: 80%; gap: 20px;">
+                    <div id="algorithmBox" style="width: 48%; padding: 25px; border-radius: 15px; background: linear-gradient(135deg, #232323, #3a3a3a); color: #ddd; min-height: 180px; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);">
+                        <h3 style="color: #ff9800; text-align: center; font-size: 20px;">Algorithm</h3>
+                        <p id="algorithmText" style="text-align: justify; opacity: 0.8;">Algorithm details will appear here...</p>
+                    </div>
+                    <div id="syntaxBox" style="width: 48%; padding: 25px; border-radius: 15px; background: linear-gradient(135deg, #232323, #3a3a3a); color: #ddd; min-height: 180px; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);">
+                        <h3 style="color: #ff9800; text-align: center; font-size: 20px;">Syntax & Description</h3>
+                        <p id="syntaxText" style="text-align: justify; opacity: 0.8;">Syntax and description will appear here...</p>
+                    </div>
+                </div>
+            
+                <!-- Buttons Section -->
+                <div style="margin-top: 30px; display: flex; gap: 20px;">
+                    <button class="nav-btn" id="prevBtn">Previous</button>
+                    <button class="nav-btn" id="codeBtn">Code</button>
+                    <button class="nav-btn" id="nextBtn">Next</button>
+                </div>
+        
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            </section>
+        </section>
+            <section id="codeBoxSection" class="code-box">
+                <h2>Python Code</h2>
+                <pre id="codeContent">
+            print("Hello, World!")  # Example Python Code
+                </pre>
+                <button id="tryCodeBtn">Try Code</button>
+            </section>
+        </div> <!-- Ensure this closes your last container -->
+        <footer>
+            <span style="color:#888;"> Created with love by </span> Ayub ㅤ <span style="color:#888;"> and </span> ㅤ Rayyan
+        </footer>
+        
+        
+    </main>
+    <script>
+        function scrollToBottom() {
+            document.getElementById("bottomContainer").scrollIntoView({ behavior: "smooth" });
+        }
+        document.getElementById("codeBtn").addEventListener("click", function() {
+            document.getElementById("codeBoxSection").style.display = "block";
+            document.getElementById("codeContent").textContent = `print("Hello, World!")  # Example Python Code`;
+        });
+        document.getElementById("codeBtn").addEventListener("click", function() {
+            document.getElementById("codeBoxSection").style.display = "block";
+            document.getElementById("codeContent").textContent = `print("Hello, World!")  # Example Python Code`;
+        });
+        
+        document.getElementById("tryCodeBtn").addEventListener("click", function() {
+            const code = document.getElementById("codeContent").textContent;
+        
+            // Copy code to clipboard automatically
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Code copied! Paste (Ctrl + V) in the Programiz compiler.");
+                
+                // Open Programiz Compiler in new tab
+                window.open("https://www.programiz.com/python-programming/online-compiler", "_blank");
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        });
+        function updateProgress(step, totalSteps) {
+            let progressBar = document.getElementById("progressBar");
+            let progress = (step / totalSteps) * 100;
+            progressBar.style.width = progress + "%";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const text = "Your AI-powered Algorithm Assistant is here to help!";
+            let index = 0;
+            const typingText = document.getElementById("typing-text");
+        
+            function type() {
+                if (index < text.length) {
+                    typingText.innerHTML = text.substring(0, index + 1); // Type one letter at a time
+                    index++;
+                    setTimeout(type, 100); // Adjust typing speed
+                } else {
+                    typingText.style.borderRight = "none"; // Remove cursor after typing completes
+                }
+            }
+        
+            typingText.innerHTML = ""; // Ensure the text starts empty
+            type(); // Start Typing Animation
+        });
+        document.addEventListener("mousemove", (event) => {
+            const robot = document.getElementById("robot-icon");
+            const moveX = (event.clientX / window.innerWidth) * 20 - 10;
+            const moveY = (event.clientY / window.innerHeight) * 20 - 10;
+            robot.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+        
+        // Algorithm Data
+        document.addEventListener("DOMContentLoaded", () => {
+            const queryBox = document.getElementById("queryBox");
+            const algorithmText = document.getElementById("algorithmText");
+            const syntaxText = document.getElementById("syntaxText");
+            const progressBar = document.getElementById("progressBar");
+            const codeBtn = document.getElementById("codeBtn");
+            const codeContent = document.getElementById("codeContent");
+            const codeBoxSection = document.getElementById("codeBoxSection");
+            const robotIcon = document.getElementById("robotIcon");
+            const nextBtn = document.getElementById("nextBtn");
+            const prevBtn = document.getElementById("prevBtn");
+        
+            let currentStep = 0;
+            let selectedAlgorithm = null;
+        
+            // Algorithm Data with Full Code
+            const algorithms = {
+                "Bubble Sort": {
+                    steps: [
+                        { step: "Start from the first element of the array.", syntax: "for i in range(n-1):", description: "Iterate over the array multiple times." },
+                        { step: "Iterate through the list and compare adjacent elements.", syntax: "for j in range(n-1-i):", description: "Move from the first element to the last unsorted element." },
+                        { step: "If the current element is greater than the next, swap them.", syntax: "if arr[j] > arr[j+1]: arr[j], arr[j+1] = arr[j+1], arr[j]", description: "Swap elements if they are not in order." },
+                        { step: "Continue this process until the entire list is sorted.", syntax: "Repeat until no more swaps are needed.", description: "Repeat until the list is fully sorted." }
+                    ],
+                    code: `# Bubble Sort Implementation
+            def bubble_sort(arr):
+                n = len(arr)
+                for i in range(n-1):  # Outer loop to traverse the array
+                    for j in range(n-1-i):  # Inner loop to compare elements
+                        if arr[j] > arr[j+1]:  # Swap if element is greater than next
+                            arr[j], arr[j+1] = arr[j+1], arr[j]
+                return arr
+            
+            arr = [5, 2, 9, 1, 5, 6]
+            sorted_arr = bubble_sort(arr)
+            print("Sorted Array:", sorted_arr)
+            `
+                },
+            
+                "Factorial": {
+                    steps: [
+                        { step: "Take input number from the user.", syntax: "n = int(input('Enter number: '))", description: "User enters a number to calculate factorial." },
+                        { step: "Initialize a variable to store the factorial result.", syntax: "fact = 1", description: "Start with 1, since multiplying by 0 is meaningless." },
+                        { step: "Loop from 1 to the given number and multiply.", syntax: "for i in range(1, n+1): fact *= i", description: "Multiply each number to accumulate the factorial." },
+                        { step: "Print the final factorial result.", syntax: "print(fact)", description: "Display the computed factorial to the user." }
+                    ],
+                    code: `# Factorial Calculation
+            def factorial(n):
+                fact = 1
+                for i in range(1, n+1):
+                    fact *= i  # Multiply each number
+                return fact
+            
+            num = int(input("Enter a number: "))
+            print("Factorial:", factorial(num))
+            `
+                },
+            
+                "Prime Check": {
+                    steps: [
+                        { step: "Take an input number from the user.", syntax: "n = int(input('Enter number: '))", description: "User enters a number to check if it's prime." },
+                        { step: "Check if the number is less than 2.", syntax: "if n < 2: return False", description: "Numbers below 2 are not prime by definition." },
+                        { step: "Loop through numbers from 2 to sqrt(n) and check divisibility.", syntax: "for i in range(2, int(math.sqrt(n)) + 1):", description: "Optimize by checking only up to the square root of n." },
+                        { step: "If divisible, return 'Not Prime'.", syntax: "if n % i == 0: return False", description: "A number is not prime if it has divisors other than 1 and itself." },
+                        { step: "If no divisors found, return 'Prime'.", syntax: "return True", description: "A number is prime if it has no divisors other than 1 and itself." }
+                    ],
+                    code: `# Prime Number Check
+            import math
+            
+            def is_prime(n):
+                if n < 2:
+                    return False
+                for i in range(2, int(math.sqrt(n)) + 1):
+                    if n % i == 0:
+                        return False
+                return True
+            
+            num = int(input("Enter a number: "))
+            print("Prime" if is_prime(num) else "Not Prime")
+            `
+                },
+            
+                "Fibonacci Series": {
+                    steps: [
+                        { step: "Take input n for sequence length.", syntax: "n = int(input('Enter length: '))", description: "User provides the number of terms to generate in the Fibonacci series." },
+                        { step: "Start with two numbers: 0 and 1.", syntax: "a, b = 0, 1", description: "Initialize the first two numbers of the series." },
+                        { step: "Loop to generate the next number by adding previous two.", syntax: "for _ in range(n): print(a, end=' '); a, b = b, a + b", description: "Generate the Fibonacci series by updating numbers." }
+                    ],
+                    code: `# Fibonacci Series
+            def fibonacci(n):
+                a, b = 0, 1
+                for _ in range(n):
+                    print(a, end=" ")
+                    a, b = b, a + b  # Move forward in the sequence
+            
+            num = int(input("Enter length: "))
+            fibonacci(num)
+            `
+                },
+            
+                "Reverse a Number": {
+                    steps: [
+                        { step: "Take input number from user.", syntax: "n = int(input('Enter number: '))", description: "User enters a number to reverse." },
+                        { step: "Extract digits from the last position using modulus.", syntax: "while n > 0: rev = rev * 10 + n % 10", description: "Extract last digit and append it to reversed number." },
+                        { step: "Divide the number by 10 to remove last digit.", syntax: "n //= 10", description: "Remove the last digit from the original number." },
+                        { step: "Print reversed number.", syntax: "print(rev)", description: "Display the reversed number." }
+                    ],
+                    code: `# Reverse a Number
+            def reverse_number(n):
+                rev = 0
+                while n > 0:
+                    rev = rev * 10 + n % 10  # Extract last digit and add to reversed number
+                    n //= 10  # Remove last digit
+                return rev
+            
+            num = int(input("Enter number: "))
+            print("Reversed:", reverse_number(num))
+            `
+                }
+            };
+            
+            // Function to Create Typing Effect
+            function typeWriterEffect(text, element, callback) {
+                element.innerHTML = ""; 
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, 50);
+                    } else {
+                        if (callback) callback();
+                    }
+                }
+                type();
+            }
+        
+            // Function to Load Algorithm Steps
+            function loadAlgorithm() {
+                const query = queryBox.value.trim();
+                if (algorithms[query]) {
+                    selectedAlgorithm = algorithms[query];
+                    currentStep = 0;
+                    updateStep();
+                } else {
+                    algorithmText.innerText = "Algorithm not found!";
+                    syntaxText.innerText = "";
+                    progressBar.style.width = "0%";
+                    codeContent.innerText = "";
+                    codeBtn.style.display = "none"; // Hide Code Button if algorithm not found
+                }
+            }
+        
+            // Function to Update Steps
+            function updateStep() {
+                if (currentStep >= 0 && currentStep < selectedAlgorithm.steps.length) {
+                    typeWriterEffect(selectedAlgorithm.steps[currentStep].step, algorithmText, () => {
+                        typeWriterEffect(selectedAlgorithm.steps[currentStep].syntax, syntaxText, () => {
+                            // Update Progress Bar
+                            let progress = ((currentStep + 1) / selectedAlgorithm.steps.length) * 100;
+                            progressBar.style.width = progress + "%";
+        
+                            // Hide Code Box Until Last Step
+                            codeContent.style.display = "none";
+        
+                            // Hide Code Button until progress reaches 100%
+                            codeBtn.style.display = progress === 100 ? "inline-block" : "none";
+                        });
+                    });
+                }
+            }
+        
+            // Function to Show Full Code
+            function showCode() {
+                codeContent.innerText = `Complete Code for ${queryBox.value}:\n\n${selectedAlgorithm.code}`;
+                codeContent.style.display = "block";
+            }
+        
+            // Event Listener for Enter Key
+            queryBox.addEventListener("keypress", (event) => {
+                if (event.key === "Enter") {
+                    loadAlgorithm();
+                    codeBtn.style.display = "none"; // Hide Code Button at start
+                }
+            });
+        
+            // Button Event Listeners
+            nextBtn.addEventListener("click", () => {
+                if (currentStep < selectedAlgorithm.steps.length - 1) {
+                    currentStep++;
+                    updateStep();
+                } else {
+                    showCode();
+                }
+            });
+        
+            prevBtn.addEventListener("click", () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateStep();
+                }
+            });
+        
+            codeBtn.addEventListener("click", showCode);
+        
+            // Robot Icon Follows Mouse
+            document.addEventListener("mousemove", (e) => {
+                let x = (e.clientX / window.innerWidth - 0.5) * 20;
+                let y = (e.clientY / window.innerHeight - 0.5) * 20;
+                robotIcon.style.transform = `translate(${x}px, ${y}px) rotate(${x}deg)`;
+            });
+        
+            // Initially Hide the Code Button
+            codeBtn.style.display = "none";
+        });
+        
+        // Example usage: Call updateProgress(stepNumber, totalSteps) whenever user navigates steps.
+        
+    </script>
 </body>
 </html>
