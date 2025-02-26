@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoAI Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 800px;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(75, 75, 75, 0.5);
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #5a5d5e;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.chat-box {
+    height: 400px;
+    overflow-y: auto;
+    background:linear-gradient(135deg, #353434, #1a1a1a);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: none;
+    box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.5);;
+}
+
+.message {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.bot {
+    background: #313233;
+    color: #ffffff;
+    align-self: flex-start;
+}
+
+.user {
+    background: #686868;
+    color: #fffafa;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+#userInput {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(135deg,#0d0d0d,#191919,#222222);
+    color: #fff;
+    font-size: 1em;
+    outline: none;
+}
+
+#userInput::placeholder {
+    color: #aaa;
+}
+
+.sendmsg {
+    padding: 12px 25px;
+    background: #ff9800;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.4s;
+}
+
+.sendmsg:hover {
+    background: #928f8c;
+}
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>AlgoAI</h1>
+        <div class="chat-box" id="chatBox">
+            <div class="message bot">Hey, bro! Ask me a coding problem—like "Reverse a string"—I’ll give you steps + code!</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Type your problem...">
+            <button class="sendmsg" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        function sendMessage() {
+    const input = document.getElementById("userInput");
+    const chatBox = document.getElementById("chatBox");
+    const query = input.value.trim();
+
+    if (!query) return;
+
+    // Add user message
+    const userMsg = document.createElement("div");
+    userMsg.className = "message user";
+    userMsg.textContent = query;
+    chatBox.appendChild(userMsg);
+
+    // Clear input
+    input.value = "";
+
+    // Fetch from backend
+    fetch("https://1734ed6c-30e0-411b-a681-3d642a27a833-00-2jyw00y6mc9qh.kirk.replit.dev/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: query })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot";
+        botMsg.textContent = data.response;
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+    })
+    .catch(error => {
+        const errorMsg = document.createElement("div");
+        errorMsg.className = "message bot";
+        errorMsg.textContent = "Oops, something broke, bro! Try again.";
+        chatBox.appendChild(errorMsg);
+    });
+}
+
+// Send on Enter key
+document.getElementById("userInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+});
+    </script>
+</body>
+</html>
