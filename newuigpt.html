@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlgoAI Chat</title>
+    <style>
+        /* Main chat container */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            position: relative; /* For sidebar positioning */
+        }
+
+        /* Header with Title and Buttons */
+        .chat-header {
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; /* Make header fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it stays on top */
+}
+
+
+        .chat-header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #00d4ff;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-controls button {
+            padding: 8px 15px;
+            background: #444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .header-controls button:hover {
+            background: #555;
+        }
+
+        /* Main Chat Area (Right) */
+        .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f0f2f5;
+    margin-top: 60px; /* Adjust for fixed header height */
+    margin-bottom: 60px; /* Adjust for fixed footer height */
+}
+
+
+        /* Chat box area where messages appear */
+        .chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    padding-top: 70px; /* Adjust for fixed header */
+    padding-bottom: 70px; /* Adjust for fixed footer */
+}
+
+
+        /* Messages */
+        .message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 70%;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message.bot {
+            background: #00d4ff;
+            color: #1a1a1a;
+        }
+
+        .message.user {
+            background: #ff007a;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        /* Markdown Styling in Messages */
+        .message strong {
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .message em {
+            font-style: italic;
+            color: #1a1a1a;
+        }
+
+        .message ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .message li {
+            margin: 5px 0;
+        }
+
+        .message li:before {
+            content: "✔️ ";
+            color: #00d4ff;
+        }
+
+        .message h1, .message h2, .message h3 {
+            font-weight: bold;
+            color: #00d4ff;
+            margin: 10px 0 5px;
+        }
+
+        .message h1 {
+            font-size: 1.5em;
+        }
+
+        .message h2 {
+            font-size: 1.2em;
+        }
+
+        .message h3 {
+            font-size: 1.1em;
+        }
+
+        /* Loading state for bot messages (only for sendMessage) */
+        .loading {
+            animation: pulse 1.5s infinite;
+            position: relative;
+        }
+
+        .loading .loading-text {
+            display: inline-block;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Typing animation for bot responses (line-by-line) */
+        .typing-line {
+            opacity: 0;
+            animation: slideUpFadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes slideUpFadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input container at bottom */
+        .input-container {
+    display: flex;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    background: #fff;
+    position: fixed; /* Make footer fixed */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it stays on top */
+}
+
+
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            min-height: 40px;
+        }
+
+        #sendBtn {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background: #ff007a;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Dark Mode styles */
+        body.dark .chat-container {
+            background: #1a1a1a;
+        }
+
+        body.dark .chat-header {
+            background: #333;
+            border-bottom: 1px solid #444;
+        }
+
+        body.dark .chat-header h1 {
+            color: #00d4ff;
+        }
+
+        body.dark .header-controls button {
+            background: #555;
+            color: #eee;
+        }
+
+        body.dark .header-controls button:hover {
+            background: #666;
+        }
+
+        body.dark .chat-area {
+            background: #222;
+        }
+
+        body.dark .chat-box {
+            background: #222;
+        }
+
+        body.dark .input-container {
+            background: #333;
+            border-top: 1px solid #444;
+        }
+
+        body.dark #userInput {
+            background: #444;
+            color: #eee;
+            border: 1px solid #555;
+        }
+
+        body.dark #sendBtn {
+            background: #cc0060;
+        }
+
+        body.dark .loading {
+            background: #007a99;
+            color: #1a1a1a;
+        }
+
+        body.dark .typing-line {
+            background: #007a99;
+            color: #1a1a1a;
+        }
+
+        body.dark .message strong {
+            color: #eee;
+        }
+
+        body.dark .message em {
+            color: #eee;
+        }
+
+        body.dark .message li:before {
+            color: #00d4ff;
+        }
+
+        body.dark .message h1, body.dark .message h2, body.dark .message h3 {
+            color: #00d4ff;
+        }
+
+        .retry-btn {
+            background: #ff007a;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .retry-btn:hover {
+            background: #cc0060;
+        }
+
+        body.dark .retry-btn {
+            background: #cc0060;
+        }
+
+        body.dark .retry-btn:hover {
+            background: #ff007a;
+        }
+
+        /* Code block styling */
+        pre code.code-block {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            display: block;
+        }
+
+        body.dark pre code.code-block {
+            background: #333;
+            color: #e0e0e0;
+        }
+
+        pre output.output-block {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            display: block;
+        }
+
+        body.dark pre output.output-block {
+            background: #333;
+            color: #e0e0e0;
+        }
+
+        /* History Sidebar */
+        .history-sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px; /* Hidden by default */
+            width: 250px;
+            height: 100vh;
+            background: #2f2f2f;
+            color: #eee;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            z-index: 1001;
+            transition: left 0.3s ease-in-out; /* Smooth slide */
+        }
+
+        .history-sidebar.open {
+            left: 0; /* Slide in when open */
+        }
+
+        .history-sidebar h2 {
+            margin-top: 0;
+        }
+
+        #sidebarChatList {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        #sidebarChatList li {
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 6px;
+            background: #444;
+            border-radius: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #sidebarChatList li:hover {
+            background: #555;
+        }
+
+        #sidebarChatList li.active {
+            background: #666;
+        }
+
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .sidebar-overlay.open {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header with Title and Buttons -->
+        <header class="chat-header">
+            <h1>AlgoAI</h1>
+            <div class="header-controls">
+                <button id="viewHistoryBtn">View Full History</button>
+                <button id="newChatBtn">New Chat</button>
+                <button id="resetBtn">Reset Chat</button>
+                <button id="themeToggle">🌙</button>
+            </div>
+        </header>
+
+        <!-- Main Chat Area (Right) -->
+        <main class="chat-area">
+            <section class="chat-box" id="chatBox">
+                <!-- Chat starts empty, backend handles initial greeting -->
+            </section>
+            <footer class="input-container">
+                <textarea id="userInput" placeholder="Type your message..." autofocus></textarea>
+                <button id="sendBtn">Send</button>
+            </footer>
+        </main>
+
+        <!-- History Sidebar (Hidden by default) -->
+        <aside class="history-sidebar" id="historySidebar">
+            <h2>Chat History</h2>
+            <ul id="sidebarChatList">
+                <!-- Populated dynamically with titles -->
+            </ul>
+        </aside>
+
+        <!-- Overlay for sidebar -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    </div>
+
+    <script>
+        const BASE_URL = "https://1734ed6c-30e0-411b-a681-3d642a27a833-00-2jyw00y6mc9qh.kirk.replit.dev";
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const newChatBtn = document.getElementById("newChatBtn");
+const resetBtn = document.getElementById("resetBtn");
+const historyBtn = document.getElementById("viewHistoryBtn");
+const sidebarChatList = document.getElementById("sidebarChatList");
+const themeToggle = document.getElementById("themeToggle");
+const historySidebar = document.getElementById("historySidebar");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+let currentChatId = null;  // Start null, fetch from backend
+
+// Fetch with retry helper, reduced retries for speed
+function fetchWithRetry(url, options, retries = 2, delay = 500) {
+    return fetch(url, options).then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+    }).catch(err => {
+        if (retries > 0) {
+            console.warn(`Retry ${retries} for ${url}: ${err.message}`);
+            return new Promise(resolve => setTimeout(() => resolve(fetchWithRetry(url, options, retries - 1, delay * 2)), delay));
+        }
+        throw err;
+    });
+}
+
+// Ensure DOM is ready and fetch initial chat_id (append backend greeting)
+document.addEventListener("DOMContentLoaded", () => {
+    userInput.focus();  // Manual focus
+    chatBox.scrollTop = chatBox.scrollHeight;
+    fetchInitialChatId();  // Get first chat_id, append greeting
+});
+
+// Fetch initial chat_id or start new chat (append backend greeting)
+function fetchInitialChatId() {
+    fetchWithRetry(`${BASE_URL}/new_chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(data => {
+        currentChatId = data.chat_id;
+        if (data.greeting) {
+            appendMessage(data.greeting, "bot"); // Append backend greeting
+        } else {
+            appendMessage("Welcome! This is a new chat session. Please provide your query to begin.", "bot"); // Professional fallback
+        }
+        loadChatList();  // Load chat history for sidebar
+    })
+    .catch(err => {
+        currentChatId = generateUUID(); // Fallback UUID if backend fails
+        appendMessage(`Error: ${err.message || err}`, "bot");
+        appendMessage("Welcome! This is a new chat session. Please provide your query to begin.", "bot"); // Professional offline greeting
+        loadChatList(); // Try to load history if possible
+    });
+}
+
+// Parse Markdown to HTML for rendering, handle edge cases
+function parseMarkdown(text) {
+    try {
+        let html = text || '';
+
+        // Handle bold (**text**)
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Handle bullets (-)
+        html = html.replace(/^-\s*(?!<li>)(.*?)$/gm, '<li>$1</li>');
+
+        // Wrap bullets in <ul>, ensure single <ul> per block
+        html = html.replace(/<li>.*<\/li>/gs, match => {
+            return `<ul>${match.replace(/<\/?ul>/g, '')}</ul>`;
+        });
+
+        // Handle code blocks (```)
+        html = html.replace(/```([\s\S]*?)```/g, '<pre><code class="code-block">$1</code></pre>');
+
+        // Clean up stray Markdown symbols, handle edge cases
+        html = html.replace(/([*_#-])\s*(?![a-zA-Z0-9])/g, '');  // Remove stray *, _, -, # not followed by text
+
+        return html;
+    } catch (err) {
+        console.error("Error parsing Markdown:", err);
+        return text || '';  // Fallback to raw text
+    }
+}
+
+// Append a message to the chat box
+function appendMessage(text, sender, isLoading = false) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", sender);
+    if (isLoading) {
+        msgDiv.classList.add("loading");
+        msgDiv.innerHTML = `<span class="loading-text">Processing...</span>`;
+    } else if (sender === "bot") {
+        msgDiv.innerHTML = parseMarkdown(text) || ''; // Parse Markdown to HTML
+    } else {
+        msgDiv.textContent = `You: ${text}`;
+    }
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return msgDiv; // Return for animation or removal
+}
+
+// Clear the chat box
+function clearChatBox() {
+    chatBox.innerHTML = "";
+}
+
+// Line-by-line animation for bot responses, faster delay
+function animateLines(lines, targetElement, delay = 200) {
+    try {
+        let index = 0;
+        function animateNext() {
+            if (index < lines.length) {
+                const lineHtml = parseMarkdown(lines[index]); // Parse each line
+                const lineDiv = document.createElement("div");
+                lineDiv.classList.add("typing-line");
+                lineDiv.innerHTML = lineHtml;
+                targetElement.appendChild(lineDiv);
+                index++;
+                setTimeout(animateNext, delay);
+            }
+        }
+        animateNext();
+    } catch (err) {
+        console.error("Error in animateLines:", err);
+        targetElement.innerHTML = parseMarkdown(lines.join('\n')) || lines.join('\n'); // Fallback to raw text
+    }
+}
+
+// Send user query to the backend with retry for timeouts (keeps loading)
+function sendMessage() {
+    if (!currentChatId) return appendMessage("Error: No chat session available. Please start a new chat.", "bot");
+
+    const query = userInput.value.trim();
+    if (!query) return;
+
+    appendMessage(query, "user");
+    userInput.value = "";
+    const loadingMsg = appendMessage("", "bot", true);
+
+    fetchWithRetry(`${BASE_URL}/query`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: query, chat_id: currentChatId })
+    })
+    .then(data => {
+        chatBox.removeChild(loadingMsg);
+        const botMsg = appendMessage("", "bot"); // Start empty
+        let responseText = data.response || "Error: No response received.";
+        
+        responseText = responseText.replace(/\r\n/g, '\n').replace(/\n{2,}/g, '\n');
+        const lines = responseText.split('\n').map(line => line.trim()).filter(line => line);
+
+        let htmlLines = [];
+        let inCodeBlock = false;
+        let codeContent = '';
+
+        lines.forEach(line => {
+            if (line.startsWith('**Code Example') && !inCodeBlock) {
+                inCodeBlock = true;
+                if (codeContent) htmlLines.push('<pre><code class="code-block">' + codeContent.trim() + '</code></pre>');
+                codeContent = '';
+            } else if (line === '```' && inCodeBlock) {
+                inCodeBlock = false;
+                htmlLines.push('<pre><code class="code-block">' + codeContent.trim() + '</code></pre>');
+                codeContent = '';
+            } else if (inCodeBlock) {
+                codeContent += line + '\n';
+            } else if (line) {
+                htmlLines.push('<div class="text-line">' + line + '</div>');
+            }
+        });
+
+        if (inCodeBlock && codeContent) {
+            htmlLines.push('<pre><code class="code-block">' + codeContent.trim() + '</code></pre>');
+        }
+
+        animateLines(htmlLines, botMsg);
+    })
+    .catch(err => {
+        chatBox.removeChild(loadingMsg);
+        const errorMsg = appendMessage(`Error: API request failed. <button class="retry-btn" data-query="${query}">Retry</button>`, "bot");
+        errorMsg.querySelector(".retry-btn").addEventListener("click", () => {
+            userInput.value = query;
+            sendMessage();
+        });
+        console.error("Fetch Error:", err);
+    });
+}
+
+// Start a new chat session
+function startNewChat() {
+    fetchWithRetry(`${BASE_URL}/new_chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(data => {
+        currentChatId = data.chat_id;
+        clearChatBox();
+        if (data.greeting) {
+            appendMessage(data.greeting, "bot"); // Append backend greeting
+        } else {
+            appendMessage("Welcome! This is a new chat session. Please provide your query to begin.", "bot"); // Professional fallback
+        }
+        loadChatList();  // Refresh chat list for sidebar
+    })
+    .catch(err => {
+        currentChatId = generateUUID(); // Fallback UUID if backend fails
+        clearChatBox();
+        appendMessage(`Error: ${err.message || err}`, "bot");
+        appendMessage("Welcome! This is a new chat session. Please provide your query to begin.", "bot"); // Professional offline greeting
+        loadChatList(); // Try to load history if possible
+    });
+}
+
+// Reset current chat
+function resetChat() {
+    if (!currentChatId) return appendMessage("Error: No chat session available. Please start a new chat.", "bot");
+
+    fetchWithRetry(`${BASE_URL}/reset_chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: currentChatId })
+    })
+    .then(data => {
+        clearChatBox();
+        appendMessage(data.message, "bot"); // Direct response
+    })
+    .catch(err => {
+        appendMessage(`Error: ${err.message || err}`, "bot"); // Show error directly
+    });
+}
+
+// Load chat list in history sidebar (titles only, handle empty data and errors)
+function loadChatList() {
+    fetchWithRetry(`${BASE_URL}/get_chat_history`)
+    .then(data => {
+        sidebarChatList.innerHTML = "";
+        if (!data.chats || !Array.isArray(data.chats) || data.chats.length === 0) {
+            console.warn("No chats found in history.", data);
+            sidebarChatList.innerHTML = `<li>No chat history available. Please start a new chat.</li>`;
+            return;
+        }
+        data.chats.forEach(chat => {
+            const li = document.createElement("li");
+            li.textContent = chat.title || "Untitled Chat";
+            // Use chat_id (UUID) as primary identifier, fall back to title if needed
+            const chatId = chat.chat_id || (chat.title ? chat.title : generateUUID());
+            if (!chatId) {
+                console.warn("Invalid chat title or ID, skipping:", chat);
+                return; // Skip invalid chats
+            }
+            li.dataset.chatId = chatId;
+            if (chatId === currentChatId) li.classList.add("active"); // Only highlight current
+            li.addEventListener("click", () => switchChat(chatId)); // Single listener per title
+            sidebarChatList.appendChild(li);
+        });
+    })
+    .catch(err => {
+        console.error("Error fetching chat history:", err);
+        sidebarChatList.innerHTML = `<li>Error: Failed to load history—${err.message || 'Please try again.'}</li>`;
+    });
+}
+
+// Switch to a specific chat (save current chat if messages exist, then load clicked chat)
+function switchChat(chatId) {
+    if (!chatId || typeof chatId !== "string") {
+        console.error("Invalid chatId.", chatId);
+        appendMessage("Error: Invalid chat selection. Please try again.", "bot");
+        return;
+    }
+
+    if (!currentChatId) {
+        console.warn("No current chat to save.");
+        currentChatId = chatId; // Set new chat if none exists
+        loadChat(chatId);
+        loadChatList();
+        toggleHistorySidebar(false); // Close sidebar after selection
+        return;
+    }
+
+    // Ensure currentChatId is valid (UUID or title)
+    if (!currentChatId) {
+        console.error("No current chat ID. Starting new chat.");
+        currentChatId = generateUUID(); // Fallback to new UUID
+    }
+
+    // Collect current chat messages from chat-box
+    const messages = Array.from(chatBox.querySelectorAll(".message"));
+    let userMsg = "", aiMsg = "";
+    messages.forEach(msg => {
+        if (msg.classList.contains("user")) {
+            userMsg += (userMsg ? "\n" : "") + msg.textContent.replace("You: ", "");
+        } else if (msg.classList.contains("bot")) {
+            aiMsg += (aiMsg ? "\n" : "") + msg.textContent;
+        }
+    });
+
+    // Only save if there are messages to avoid 400 errors
+    if (userMsg.trim() || aiMsg.trim()) {
+        // Save current chat to backend (use currentChatId as UUID or title)
+        fetchWithRetry(`${BASE_URL}/update_chat/${currentChatId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_msg: userMsg, ai_msg: aiMsg, title: currentChatId })
+        })
+        .then(data => {
+            console.log("Current chat saved:", data);
+            // Switch to new chat (use chat_id if available, otherwise title)
+            currentChatId = chatId;
+            clearChatBox(); // Clear before loading new chat
+            loadChat(chatId); // Load the clicked chat
+            loadChatList(); // Refresh to show active state
+            toggleHistorySidebar(false); // Close sidebar after selection
+        })
+        .catch(err => {
+            appendMessage(`Error saving current chat: ${err.message || err}`, "bot");
+            // Fallback: Switch anyway, but warn user
+            currentChatId = chatId;
+            clearChatBox();
+            loadChat(chatId);
+            loadChatList();
+            toggleHistorySidebar(false); // Close sidebar after selection
+        });
+    } else {
+        // No messages to save, switch directly
+        console.log("No messages to save, switching chat...");
+        currentChatId = chatId;
+        clearChatBox();
+        loadChat(chatId);
+        loadChatList();
+        toggleHistorySidebar(false); // Close sidebar after selection
+    }
+}
+
+// Load a specific chat into the chat section
+function loadChat(chatId) {
+    if (!chatId || typeof chatId !== "string") {
+        console.error("Invalid chatId.", chatId);
+        appendMessage("Error: Invalid chat to load. Please try again.", "bot");
+        return;
+    }
+    // Try with chat_id (UUID) first, then title if it fails
+    fetchWithRetry(`${BASE_URL}/get_chat/${chatId}`)
+    .then(data => {
+        if (data.error) {
+            // If 404, try with the title pattern (e.g., "Chat about hi...")
+            if (chatId.startsWith("Chat about ")) {
+                return fetchWithRetry(`${BASE_URL}/get_chat/${encodeURIComponent(chatId)}`)
+                    .then(titleData => titleData)
+                    .catch(titleErr => { throw titleErr; });
+            }
+            throw new Error(data.error);
+        }
+        return data;
+    })
+    .then(data => {
+        clearChatBox(); // Clear previous chat before loading new one
+        data.history.forEach(exchange => {
+            if (exchange.user) appendMessage(exchange.user, "user");
+            if (exchange.ai) appendMessage(exchange.ai, "bot");
+        });
+    })
+    .catch(err => {
+        appendMessage(`Error: ${err.message || err}`, "bot");
+    });
+}
+
+// Toggle history sidebar
+function toggleHistorySidebar(open = false) {
+    historySidebar.classList.toggle("open", open);
+    sidebarOverlay.classList.toggle("open", open);
+}
+
+// Event listeners
+sendBtn.addEventListener("click", sendMessage);
+newChatBtn.addEventListener("click", startNewChat);
+resetBtn.addEventListener("click", resetChat);
+historyBtn.addEventListener("click", () => toggleHistorySidebar(true)); // Open sidebar on click
+themeToggle.addEventListener("click", function () {
+    document.body.classList.toggle("dark");
+    this.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+});
+
+userInput.addEventListener("keypress", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+// Close sidebar when clicking overlay
+sidebarOverlay.addEventListener("click", () => toggleHistorySidebar(false));
+
+// On page load
+loadChatList();
+    </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyA-3XjMCY2JvRrPkjv8MkfigMivMDIHly8",
+          authDomain: "algoai-aa858.firebaseapp.com",
+          projectId: "algoai-aa858",
+          storageBucket: "algoai-aa858.firebasestorage.app",
+          messagingSenderId: "372434861038",
+          appId: "1:372434861038:web:73a9100af3eb40a9e62cff",
+          measurementId: "G-PQRDR0Y7YB"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
+</body>
+</html>
